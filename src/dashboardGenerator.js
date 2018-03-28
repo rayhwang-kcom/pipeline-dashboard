@@ -90,7 +90,7 @@ class DashboardGenerator {
                     }                    
                 }];
                 y += 3;
-                return widget;
+                return widgets;
             })
         };
 
