@@ -39,7 +39,7 @@ class DashboardGenerator {
         let period=60 * 60 * 24 * 30;
         let dashboard = {
             "widgets": state.pipelineNames.map(pipelineName => {
-                let widget = {
+                let widgets = [{
                     "type": "metric",
                     "x": 0,
                     "y": y,
@@ -78,7 +78,17 @@ class DashboardGenerator {
                         "title": pipelineName,
                         "period": period
                     }
-                };
+                },
+                {
+                    "type": "text",
+                    "x":22,
+                    "y":y,
+                    "width":10,
+                    "height":3,
+                    "properties":{
+                       "markdown":"Hello world"
+                    }                    
+                }];
                 y += 3;
                 return widget;
             })
