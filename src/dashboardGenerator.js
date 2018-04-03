@@ -39,7 +39,7 @@ class DashboardGenerator {
         let period=60 * 60 * 24 * 30;
         let dashboard = {
             "widgets": state.pipelineNames.map(pipelineName => {
-                let widgets = [{
+                let widget = {
                     "type": "metric",
                     "x": 0,
                     "y": y,
@@ -78,24 +78,31 @@ class DashboardGenerator {
                         "title": pipelineName,
                         "period": period
                     }
-                },
-                {
-                    "type": "text",
-                    "x":22,
-                    "y":y,
-                    "width":10,
-                    "height":3,
-                    "properties":{
-                       "markdown":"Hello world"
-                    }                    
-                }];
+                };
                 y += 3;
-                return widgets;
+                return widget;
             })
         };
 
+        let x = 22;
+        y = 0;
 
-        let x = 0;
+        state.pipelineNames.forEach(pipelineName => {
+            dashboard.widgets.push({
+                "type": "text",
+                "x": x,
+                "y": y,
+                "width": 3,
+                "height": 3,
+                "properties": {
+                    "markdown": "![](http://www.deardoctor.com/images/articles/creating-teeth-for-hollywood-movies/mike-myers-teeth-austin-powers.jpg)"
+                }
+            });
+
+            y += 3;
+        });
+
+        x = 0;
         [
             {
                 "title": "Cycle Time",
