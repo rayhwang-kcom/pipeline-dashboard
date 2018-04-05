@@ -1,0 +1,2 @@
+Raymonds-MacBook-Pro-2:pipeline-dashboard ray$ aws cloudformation package --template-file template.yml --s3-bucket lalalaray123 --output-template-file .out/template.yml 
+Raymonds-MacBook-Pro-2:pipeline-dashboard ray$ aws s3 cp s3://lalalaray123/73d3cf2da84f84546f1dfd9be71c6dbe ~/Downloads/blah.zip
