@@ -1,5 +1,6 @@
 'use strict';
 
+var AWS = require('aws-sdk');
 
 class DashboardGenerator {
     run(eventPromise) {
@@ -34,6 +35,8 @@ class DashboardGenerator {
     }
 
     putDashboard(state) {
+        let codepipeline = new AWS.CodePipeline();
+
         state.pipelineNames = [...new Set(state.pipelineNames)].sort();
         let y=0; // leave space for the legend on first row
         let period=60 * 60 * 24 * 30;
@@ -43,7 +46,7 @@ class DashboardGenerator {
                     "type": "metric",
                     "x": 0,
                     "y": y,
-                    "width": 21,
+                    "width": 17,
                     "height": 3,
                     "properties": {
                         "view": "singleValue",
@@ -84,23 +87,65 @@ class DashboardGenerator {
             })
         };
 
-        let x = 22;
+        let x = 17;
         y = 0;
 
+
         state.pipelineNames.forEach(pipelineName => {
-            dashboard.widgets.push({
-                "type": "text",
-                "x": x,
-                "y": y,
-                "width": 3,
-                "height": 3,
-                "properties": {
-                    "markdown": "![](http://www.deardoctor.com/images/articles/creating-teeth-for-hollywood-movies/mike-myers-teeth-austin-powers.jpg)"
+            codepipeline.getPipelineState({name: pipelineName}, function(err, data) {
+                let text = "";
+                let colour = "";
+
+                console.log("#############")
+                if (err) {
+                    colour = "red";
+                    text = err.message;
+
+                    console.log(err.message)
+                } else {
+                    colour = "green";
+
+                    for (var i = 0; i < data.stageStates.length; i++) {
+                        var stage = data.stageStates[i];
+
+                        text += "Stage: " + stage.stageName + ", state: " + stage.latestExecution.status + "</br>";
+                    }
+
+                    console.log(text)
                 }
+                
+                dashboard.widgets.push({
+                    "type": "text",
+                    "x": 17,
+                    "y": y,
+                    "width": 5,
+                    "height": 3,
+                    "properties": {
+                        //"markdown": "<span style=\"background-color:" + colour + "\">" + text + "</span>"
+                        "markdown": "abcde"
+                    }
+                });    
             });
 
             y += 3;
         });
+
+        // y = 0;
+
+        // state.pipelineNames.forEach(pipelineName => {
+        //     dashboard.widgets.push({
+        //         "type": "text",
+        //         "x": 17,
+        //         "y": y,
+        //         "width": 5,
+        //         "height": 3,
+        //         "properties": {
+        //             "markdown": "meow"
+        //         }
+        //     });
+
+        //     y += 3;
+        // });
 
         x = 0;
         [
